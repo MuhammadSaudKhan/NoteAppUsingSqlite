@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import androidx.annotation.Nullable;
 
+import com.google.android.material.tabs.TabLayout;
 import com.saud.app.noteapp.Model.note_model;
 
 import java.util.ArrayList;
@@ -35,8 +36,10 @@ public class MySqliteHelper extends SQLiteOpenHelper {
         cv.put(TableSchema.note.DATE,model.getDate());
         long id= database.insert(TableSchema.note.TABLE_NAME,null,cv);
         if (id==-1){
+            database.close();
             return false;
         }
+        database.close();
         return true;
     }
     public List<note_model> getAllNotes(){
@@ -55,6 +58,30 @@ public class MySqliteHelper extends SQLiteOpenHelper {
         cursor.close();
         database.close();
         return list;
+    }
+    public boolean delNoteById(String id){
+        SQLiteDatabase database=this.getWritableDatabase();
+        int d_id=database.delete(TableSchema.note.TABLE_NAME,TableSchema.note.ID+"=?",new String[]{id});
+        if (d_id==-1){
+            database.close();
+            return false;
+        }
+        database.close();
+        return true;
+    }
+    public boolean updateNoteById(note_model model){
+        SQLiteDatabase database=this.getWritableDatabase();
+        ContentValues values=new ContentValues();
+        values.put(TableSchema.note.TITLE,model.getTitle());
+        values.put(TableSchema.note.DESCRIPTION,model.getDescription());
+        values.put(TableSchema.note.DATE,model.getDate());
+        int u_id=database.update(TableSchema.note.TABLE_NAME,values,TableSchema.note.ID+"=?",new String[]{String.valueOf(model.getId())});
+        if (u_id==-1){
+            database.close();
+            return false;
+        }
+        database.close();
+        return true;
     }
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
