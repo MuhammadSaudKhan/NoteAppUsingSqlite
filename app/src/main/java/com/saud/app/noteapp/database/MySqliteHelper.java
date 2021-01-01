@@ -83,6 +83,7 @@ public class MySqliteHelper extends SQLiteOpenHelper {
         database.close();
         return true;
     }
+
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
         if (i<i1){
